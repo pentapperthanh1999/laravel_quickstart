@@ -1,5 +1,8 @@
 <?php
 
+use App\Task;
+
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +17,22 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    $tasks = Task::orderBy('created_at', 'asc')->get();
+
+    return view('tasks', [
+        'tasks' => $tasks
+    ]);
 });
+
+/**
+ * Add New Task
+ */
+Route::post('/task','TaskController@store')->name('add-task');
+/**
+ * Delete Task
+ */
+Route::delete('/task/{task}', function (Task $task) {
+    $task->delete();
+
+    return redirect('/');
+})->name('delete-task');
